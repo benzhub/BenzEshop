@@ -43,7 +43,7 @@ class Product(models.Model):
     # sku = models.CharField(max_length=10, primary_key=True) # 將這個sku設定為 primary key
     title = models.CharField(max_length=255)
     slug = models.SlugField(default="-")  # slug可以優化我們在搜尋的速度
-    descriotion = models.TextField()
+    description = models.TextField()
     # 9999999.99
     # 跟錢有關的小數點數字都應該使用 DecimalField
     unit_price = models.DecimalField(max_digits=9, decimal_places=2)
