@@ -1,0 +1,5 @@
+/env_vars.sh
+/set_aws_env_vars.py
+/zappa_settings.json
+/static
+__pycache__
