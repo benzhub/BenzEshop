@@ -19,8 +19,9 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.JSONRenderer',
+    "COERCE_DECIMAL_TO_STRING": False,
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
         # any other renderers you may need
     ],
 }
@@ -32,7 +33,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'rest_framework',
+    "rest_framework",
     "store",
     "tags",
     "likes",
