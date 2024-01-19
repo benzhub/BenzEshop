@@ -45,3 +45,7 @@ class CustomerAdmin(admin.ModelAdmin):
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = ["id", "placed_at", "customer"]
+
+@admin.register(models.Promotion)
+class PromotionAdmin(admin.ModelAdmin):
+    list_display = ["id", "discount", "description"]

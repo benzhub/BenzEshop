@@ -7,7 +7,8 @@ class Promotion(models.Model):
     description = models.CharField(max_length=255)
     discount = models.FloatField()
     # product_set => products # 如果沒有設定related_name的話，那麼默認就會是product_set
-
+    def __str__(self) -> str:
+        return self.description
 
 class Customer(models.Model):
     phone_regex = RegexValidator(
