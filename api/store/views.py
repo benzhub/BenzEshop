@@ -1,9 +1,27 @@
+from rest_framework import status, mixins
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.viewsets import ModelViewSet
-from .models import Product, OrderItem
-from .serializers import ProductBaseSerializer, ProductGetSerializer, ProductEditSerializer
+from rest_framework.decorators import action
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from .serializers import ProductBaseSerializer, ProductGetSerializer, ProductEditSerializer, CustomerSerializer
+from .models import Product, OrderItem, Customer
 
+class CustomerViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, GenericViewSet):
+    queryset = Customer
+    serializer_class = CustomerSerializer
+
+    @action(detail=False, methods=['GET', 'PUT'])
+    def me(self, request):
+        (customer, created) = Customer.objects.get_or_create(
+            user_id=request.user.id)
+        if request.method == 'GET':
+            # request.user # AnonymousUser
+            serializer = CustomerSerializer(customer)
+            return Response(serializer.data)
+        elif request.method == 'PUT':
+            serializer = CustomerSerializer(customer, data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)
 
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()

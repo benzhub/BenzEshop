@@ -1,7 +1,13 @@
 from rest_framework import serializers
-from .models import Product, Promotion
+from .models import Product, Promotion, Customer
 from decimal import Decimal
 
+class CustomerSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Customer
+        fields = ['id', 'user_id', 'phone_number', 'birth_date', 'membership']
 
 class ProductBaseSerializer(serializers.ModelSerializer):
     class Meta:

@@ -1,5 +1,7 @@
+from django.contrib import admin
 from django.db import models
 from django.core.validators import RegexValidator
+from django.conf import settings
 # Promotion - Product(many to many)
 
 
@@ -18,27 +20,39 @@ class Customer(models.Model):
         message="Phone number must be entered in the format: '0912345678'. Up to 10 digits allowed.",
     )
 
-    MEMEBERSHIP_BRONZE = "B"
-    MEMEBERSHIP_SILVER = "S"
-    MEMEBERSHIP_GOLD = "G"
+    MEMBERSHIP_BRONZE = "B"
+    MEMBERSHIP_SILVER = "S"
+    MEMBERSHIP_GOLD = "G"
 
-    MEMEBERSHIP_CHOICES = [
-        (MEMEBERSHIP_BRONZE, "Bronze"),
-        ("S", "Silver"),
-        ("G", "Gold"),
+    MEMBERSHIP_CHOICES = [
+        (MEMBERSHIP_BRONZE, "Bronze"),
+        (MEMBERSHIP_SILVER, "Silver"),
+        (MEMBERSHIP_GOLD, "Gold"),
     ]
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
-    email = models.EmailField(unique=True)
-    phone_number = models.CharField(validators=[phone_regex], max_length=10, blank=True)
+    phone_number = models.CharField(validators=[phone_regex], max_length=10, blank=True, unique=True)
     birth_date = models.DateField(null=True)
     membership = models.CharField(
-        max_length=1, choices=MEMEBERSHIP_CHOICES, default=MEMEBERSHIP_BRONZE
+        max_length=1, choices=MEMBERSHIP_CHOICES, default=MEMBERSHIP_BRONZE
     )
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.user.first_name} {self.user.last_name}'
+
+    @admin.display(ordering='user__first_name')
+    def first_name(self):
+        return self.user.first_name
+
+    @admin.display(ordering='user__last_name')
+    def last_name(self):
+        return self.user.last_name
+
+    def orders(self):
+        return self.order_set.count()
 
     class Meta:
-        db_table = "store_customers"
-        indexes = [models.Index(fields=["last_name", "first_name"])]
+        ordering = ['user__first_name', 'user__last_name']
 
 
 class Product(models.Model):
@@ -76,7 +90,10 @@ class Order(models.Model):
         max_length=1, choices=PAYMENT_STATUS_CHOICES, default=PAYMENT_STATUS_PENDING
     )
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
-
+    class Meta:
+        permissions = [
+            ('cancel_order', 'Can cancel order')
+        ]
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.PROTECT)
