@@ -2,12 +2,18 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.viewsets import ModelViewSet
 from .models import Product, OrderItem
-from .serializers import ProductSerializer
+from .serializers import ProductBaseSerializer, ProductGetSerializer, ProductEditSerializer
 
 
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+    serializer_class = ProductBaseSerializer
+
+    def get_serializer_class(self):
+        if self.action == 'list' or self.action == 'retrieve':
+            return ProductGetSerializer
+        else: 
+            return ProductEditSerializer
 
     def get_serializer_context(self):
         return {"request": self.request}
