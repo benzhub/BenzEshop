@@ -17,7 +17,7 @@ class AddressInline(admin.TabularInline):
 # Register your models here.
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ["title", "unit_price", "inventory_status"]
+    list_display = ["id", "title", "unit_price", "inventory_status"]
     list_editable = ["unit_price"]
     list_per_page = 10
     inlines = [TagInline]

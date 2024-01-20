@@ -6,14 +6,16 @@ from django.core.validators import RegexValidator
 class Promotion(models.Model):
     description = models.CharField(max_length=255)
     discount = models.FloatField()
+
     # product_set => products # 如果沒有設定related_name的話，那麼默認就會是product_set
     def __str__(self) -> str:
         return self.description
 
+
 class Customer(models.Model):
     phone_regex = RegexValidator(
-        regex=r'^09\d{8}$',
-        message="Phone number must be entered in the format: '0912345678'. Up to 10 digits allowed."
+        regex=r"^09\d{8}$",
+        message="Phone number must be entered in the format: '0912345678'. Up to 10 digits allowed.",
     )
 
     MEMEBERSHIP_BRONZE = "B"
@@ -28,7 +30,7 @@ class Customer(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
-    phone_number = models.CharField(validators=[phone_regex], max_length=10, blank=True) 
+    phone_number = models.CharField(validators=[phone_regex], max_length=10, blank=True)
     birth_date = models.DateField(null=True)
     membership = models.CharField(
         max_length=1, choices=MEMEBERSHIP_CHOICES, default=MEMEBERSHIP_BRONZE
@@ -50,7 +52,7 @@ class Product(models.Model):
     inventory = models.IntegerField()
     last_update = models.DateTimeField(auto_now=True)  # 只要有更新就會記錄時間
     # last_update = models.DateTimeField(auto_now_add=True) # 只有在第一次創建的時候才會記錄時間
-    promotions = models.ManyToManyField(Promotion, related_name="products")
+    promotions = models.ManyToManyField(Promotion, related_name="products", default=1)
 
     def __str__(self) -> str:
         return self.title
