@@ -13,13 +13,13 @@ from .models import Product, Order, OrderItem, Customer
 from .permissions import IsInCustomerGroup
 
 class OrderViewSet(mixins.CreateModelMixin, GenericViewSet):
-    queryset = Order
+    queryset = Order.objects.filter(is_deleted=False).all()
     serializer_class = OrderCreateSerializer
     permission_classes = [IsInCustomerGroup]
 
 
 class CustomerViewSet(ModelViewSet):
-    queryset = Customer.objects.all()
+    queryset = Customer.objects.filter(is_deleted=False).all()
     serializer_class = CustomerSerializer
 
     def get_serializer_class(self):
@@ -30,7 +30,7 @@ class CustomerViewSet(ModelViewSet):
 
 
 class ProductViewSet(ModelViewSet):
-    queryset = Product.objects.all()
+    queryset = Product.objects.filter(is_deleted=False).all()
     serializer_class = ProductBaseSerializer
 
     def get_serializer_class(self):

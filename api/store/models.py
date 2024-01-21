@@ -36,6 +36,7 @@ class Customer(models.Model):
     )
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.user.first_name} {self.user.last_name}'
@@ -67,6 +68,7 @@ class Product(models.Model):
     last_update = models.DateTimeField(auto_now=True)  # 只要有更新就會記錄時間
     # last_update = models.DateTimeField(auto_now_add=True) # 只有在第一次創建的時候才會記錄時間
     promotions = models.ManyToManyField(Promotion, related_name="products", default=1)
+    is_deleted = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return self.title
@@ -90,6 +92,7 @@ class Order(models.Model):
         max_length=1, choices=PAYMENT_STATUS_CHOICES, default=PAYMENT_STATUS_PENDING
     )
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
+    is_deleted = models.BooleanField(default=False)
     class Meta:
         permissions = [
             ('cancel_order', 'Can cancel order')

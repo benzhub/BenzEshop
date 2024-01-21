@@ -5,8 +5,8 @@ from decimal import Decimal
 from django.db import transaction
 
 class OrderItemserializer(serializers.Serializer):
-    product = serializers.IntegerField(write_only=True)
-    quantity = serializers.IntegerField(write_only=True)
+    product = serializers.IntegerField()
+    quantity = serializers.IntegerField()
 
 
 class OrderCreateSerializer(serializers.ModelSerializer):
