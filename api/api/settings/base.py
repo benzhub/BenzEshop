@@ -18,6 +18,22 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
+# EMAIL_BACKEND = os.getenv("EMAIL_BACKEND")
+# EMAIL_HOST = os.getenv("EMAIL_HOST")
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+# EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+# EMAIL_USE_TLS = True
+
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND")
+SPARKPOST_API_KEY = os.getenv("SPARKPOST_API_KEY")
+
+SPARKPOST_OPTIONS = {
+    'track_opens': False,
+    'track_clicks': False,
+    'transactional': True,
+}
+
 ROOT_URLCONF = 'api.urls'
 
 TEMPLATES = [

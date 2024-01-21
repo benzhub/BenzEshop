@@ -6,7 +6,7 @@ from django.core.validators import RegexValidator
 from rest_framework import serializers
 from django.db import transaction
 from store.models import Customer
-
+from django.contrib.auth.models import Group
 
 class UserCreateSerializer(BaseUserCreateSerializer):
     extra_info = {}
@@ -52,7 +52,9 @@ class UserCreateSerializer(BaseUserCreateSerializer):
                 "Customer with this phone number already exists."
             )
         with transaction.atomic():
+            customer_group = Group.objects.get(name="Customer")
             user = super().create(validated_data)
+            user.groups.add(customer_group)
             Customer.objects.create(
                 user=user,
                 phone_number=self.extra_info["phone_number"],

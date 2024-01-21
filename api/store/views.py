@@ -1,36 +1,42 @@
 from rest_framework import status, mixins
 from rest_framework.response import Response
-from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from .serializers import ProductBaseSerializer, ProductGetSerializer, ProductEditSerializer, CustomerSerializer
-from .models import Product, OrderItem, Customer
+from .serializers import (
+    ProductBaseSerializer,
+    ProductGetSerializer,
+    ProductEditSerializer,
+    CustomerSerializer,
+    CustomerEditSerializer,
+    OrderCreateSerializer,
+)
+from .models import Product, Order, OrderItem, Customer
+from .permissions import IsInCustomerGroup
 
-class CustomerViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, GenericViewSet):
-    queryset = Customer
+class OrderViewSet(mixins.CreateModelMixin, GenericViewSet):
+    queryset = Order
+    serializer_class = OrderCreateSerializer
+    permission_classes = [IsInCustomerGroup]
+
+
+class CustomerViewSet(ModelViewSet):
+    queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
 
-    @action(detail=False, methods=['GET', 'PUT'])
-    def me(self, request):
-        (customer, created) = Customer.objects.get_or_create(
-            user_id=request.user.id)
-        if request.method == 'GET':
-            # request.user # AnonymousUser
-            serializer = CustomerSerializer(customer)
-            return Response(serializer.data)
-        elif request.method == 'PUT':
-            serializer = CustomerSerializer(customer, data=request.data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return Response(serializer.data)
+    def get_serializer_class(self):
+        if self.action == "update":
+            return CustomerEditSerializer
+        else:
+            return CustomerSerializer
+
 
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductBaseSerializer
 
     def get_serializer_class(self):
-        if self.action == 'list' or self.action == 'retrieve':
+        if self.action == "list" or self.action == "retrieve":
             return ProductGetSerializer
-        else: 
+        else:
             return ProductEditSerializer
 
     def get_serializer_context(self):

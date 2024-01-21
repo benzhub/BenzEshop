@@ -34,10 +34,23 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "AUTH_HEADER_TYPES": ("JWT",),
+   'AUTH_HEADER_TYPES': ('JWT',),
+   'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+   'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+   'AUTH_TOKEN_CLASSES': (
+       'rest_framework_simplejwt.tokens.AccessToken',
+   )
 }
 
 DJOSER = {
+   'LOGIN_FIELD': 'email',
+   'USER_CREATE_PASSWORD_RETYPE': True,
+   'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
+   'SEND_CONFIRMATION_EMAIL': True,
+   'SET_PASSWORD_RETYPE': True,
+   'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+   'ACTIVATION_URL': 'activate/{uid}/{token}',
+   'SEND_ACTIVATION_EMAIL': True,
     "SERIALIZERS": {
         "user_create": "core.serializers.UserCreateSerializer",
         "current_user": "core.serializers.UserSerializer",
