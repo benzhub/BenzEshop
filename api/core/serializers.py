@@ -7,6 +7,7 @@ from rest_framework import serializers
 from django.db import transaction
 from store.models import Customer
 from django.contrib.auth.models import Group
+from .models import User
 
 class UserCreateSerializer(BaseUserCreateSerializer):
     extra_info = {}
@@ -65,5 +66,10 @@ class UserCreateSerializer(BaseUserCreateSerializer):
 
 
 class UserSerializer(BaseUserSerializer):
+    id = serializers.SerializerMethodField(method_name="get_customer_id", read_only=True)
     class Meta(BaseUserSerializer.Meta):
         fields = ["id", "username", "email", "first_name", "last_name"]
+    
+    def get_customer_id(self, user: User):
+        return user.customer.id
+
