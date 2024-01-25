@@ -76,23 +76,35 @@ class OrderCreateSerializer(serializers.ModelSerializer):
 
     def create_order_items(self, order):
         order_items_to_create = []
+        product_ids = [item["product"] for item in self.products_info["products"]]
+        products = Product.objects.filter(pk__in=product_ids)
+
+        product_instances = {product.id: product for product in products}
+
         for item in self.products_info["products"]:
-            product_instance = get_object_or_404(Product, pk=item["product"])
-            quantity = item["quantity"]
             product_id = item["product"]
-            if quantity > product_instance.inventory: 
-                raise serializers.ValidationError({"quantity": f"Order item quantity: {quantity} is greater than the product: {product_id} inventory"})
+            quantity = item["quantity"]
             
+            product_instance = product_instances.get(product_id)
+
+            if not product_instance:
+                raise serializers.ValidationError({"product": f"Product with ID {product_id} not found"})
+
+            if quantity > product_instance.inventory:
+                raise serializers.ValidationError(
+                    {"quantity": f"Order item quantity: {quantity} is greater than the product: {product_id} inventory"}
+                )
+
             product_instance.inventory -= quantity
-            product_instance.save()
             order_item = OrderItem(
                 order=order,
                 product=product_instance,
-                quantity=product_id,
+                quantity=quantity,
                 unit_price=product_instance.unit_price,
             )
             order_items_to_create.append(order_item)
 
+        Product.objects.bulk_update(products, ["inventory"])
         OrderItem.objects.bulk_create(order_items_to_create)
 
 

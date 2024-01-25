@@ -103,7 +103,6 @@ class Order(models.Model):
         max_length=1, choices=PAYMENT_STATUS_CHOICES, default=PAYMENT_STATUS_PENDING
     )
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT, related_name="orders")
-    # is_canceled = models.BooleanField(default=False)
     cancel_result = models.CharField(max_length=255, blank=True)
     status = models.CharField(max_length=1, choices=ORDER_STATUS_CHOICES, default=ORDER_STATUS_Pending)
     class Meta:
