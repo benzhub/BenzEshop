@@ -11,27 +11,51 @@ from .serializers import (
     CustomerBySelfSerializer,
     CustomerByManagerSerializer,
     OrderCreateSerializer,
-    OrderGetSerializer
+    OrderSoftDeleteSerializer,
+    OrderGetSerializer,
+    OrderListByManagerSerializer,
+    OrderDetailByManagerSerializer,
+    OrderUpdateByManagerSerializer
 )
 
 
-#################### Customer ####################
-# Get      => Get Order Detail By Customer Self
-# Get List => Get All Orders   By Customer Self
-# Create   => Create Order     By Customer Self
-class OrderByCustomerViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.CreateModelMixin, GenericViewSet):
+#################### Order ####################
+# Get         => Get Order Detail         By Customer Self
+# Get List    => Get All Orders           By Customer Self
+# Create      => Create Order             By Customer Self
+# Soft Delete => Update is_canceled=True  By Customer Self
+class OrderByCustomerViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.CreateModelMixin, mixins.UpdateModelMixin, GenericViewSet):
     permission_classes = [IsInCustomerGroup]
 
     def get_queryset(self):
-        # queryset = Order.objects.filter(Q(is_canceled=False) & Q(customer=self.request.user.customer)).select_related("order_items").all()
-        queryset = Order.objects.filter(Q(is_canceled=False) & Q(customer=self.request.user.customer)).prefetch_related("orderitems").all()
+        # queryset = Order.objects.filter(Q(is_canceled=False) & Q(customer=self.request.user.customer)).prefetch_related("orderitems").all()
+        queryset = Order.objects.filter(Q(customer=self.request.user.customer) & ~Q(status=Order.ORDER_STATUS_DELETED)).prefetch_related("orderitems").all()
         return queryset
 
     def get_serializer_class(self):
         if self.action == 'create':
             return OrderCreateSerializer
+        elif self.action == 'update':
+            return OrderSoftDeleteSerializer
         else: 
             return OrderGetSerializer
+
+
+# Get         => Get Order Detail         By Manager
+# Get List    => Get All Orders           By Manager
+# Update      => Update Order Detail      By Manager
+# Soft Delete => Update is_canceled=True  By Manager 
+class OrderByManagerViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, GenericViewSet):
+    queryset = Order.objects.prefetch_related("orderitems").select_related("customer__user").all()
+    permission_classes = [IsAdminUser]
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return OrderListByManagerSerializer
+        elif self.action == 'update':
+            return OrderUpdateByManagerSerializer
+        else:
+            return OrderDetailByManagerSerializer
         
 #################### Customer ####################
 # Get         => Get Customer Info      By Self

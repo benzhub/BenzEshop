@@ -2,12 +2,14 @@ from djoser.serializers import (
     UserSerializer as BaseUserSerializer,
     UserCreateSerializer as BaseUserCreateSerializer,
 )
-from django.core.validators import RegexValidator
-from rest_framework import serializers
 from django.db import transaction
-from store.models import Customer
+from django.core.validators import RegexValidator
 from django.contrib.auth.models import Group
+from django.shortcuts import get_object_or_404
+from rest_framework import serializers
+from store.models import Customer
 from .models import User
+
 
 class UserCreateSerializer(BaseUserCreateSerializer):
     extra_info = {}
@@ -45,15 +47,15 @@ class UserCreateSerializer(BaseUserCreateSerializer):
         return validated_data
 
     def create(self, validated_data):
-        existing_customer = Customer.objects.filter(
-            phone_number=self.extra_info["phone_number"]
-        ).first()
-        if existing_customer:
-            raise serializers.ValidationError(
-                "Customer with this phone number already exists."
-            )
         with transaction.atomic():
-            customer_group = Group.objects.get(name="Customer")
+            existing_customer = Customer.objects.filter(
+                phone_number=self.extra_info["phone_number"]
+            ).first()
+            if existing_customer:
+                raise serializers.ValidationError(
+                    "Customer with this phone number already exists."
+                )
+            customer_group, _ = Group.objects.get_or_create(name="Customer")
             user = super().create(validated_data)
             user.groups.add(customer_group)
             Customer.objects.create(

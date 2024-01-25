@@ -45,8 +45,6 @@ DOMAIN = os.getenv("DOMAIN")
 SITE_NAME = os.getenv("SITE_NAME")
 DJOSER = {
     "EMAIL": {
-        # "activation": "core.email.CustomActivationEmail",
-        # "confirmation": "core.email.CustomConfirmationEmail",
         "activation": "djoser.email.ActivationEmail",
         "confirmation": "djoser.email.ConfirmationEmail",
         "password_reset": "djoser.email.PasswordResetEmail",
