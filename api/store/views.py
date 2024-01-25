@@ -1,53 +1,122 @@
-from rest_framework import status, mixins
-from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from .serializers import (
-    ProductBaseSerializer,
-    ProductGetSerializer,
-    ProductEditSerializer,
-    CustomerSerializer,
-    CustomerEditSerializer,
-    OrderCreateSerializer,
-)
-from .models import Product, Order, OrderItem, Customer
+from rest_framework import mixins
+from rest_framework.viewsets import GenericViewSet
+from rest_framework.permissions import IsAdminUser
+from .models import Product, Order, Customer
 from .permissions import IsInCustomerGroup
+from django.db.models import Q
+from .serializers import (
+    ProductListSerializer,
+    ProductDetailSerializer,
+    ProductByManagerSerializer,
+    CustomerBySelfSerializer,
+    CustomerByManagerSerializer,
+    OrderCreateSerializer,
+    OrderSoftDeleteSerializer,
+    OrderGetSerializer,
+    OrderListByManagerSerializer,
+    OrderDetailByManagerSerializer,
+    OrderUpdateByManagerSerializer
+)
 
-class OrderViewSet(mixins.CreateModelMixin, GenericViewSet):
-    queryset = Order.objects.filter(is_deleted=False).all()
-    serializer_class = OrderCreateSerializer
+
+#################### Order ####################
+# Get         => Get Order Detail         By Customer Self
+# Get List    => Get All Orders           By Customer Self
+# Create      => Create Order             By Customer Self
+# Soft Delete => Update is_canceled=True  By Customer Self
+class OrderByCustomerViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.CreateModelMixin, mixins.UpdateModelMixin, GenericViewSet):
     permission_classes = [IsInCustomerGroup]
 
-
-class CustomerViewSet(ModelViewSet):
-    queryset = Customer.objects.filter(is_deleted=False).all()
-    serializer_class = CustomerSerializer
-
-    def get_serializer_class(self):
-        if self.action == "update":
-            return CustomerEditSerializer
-        else:
-            return CustomerSerializer
-
-
-class ProductViewSet(ModelViewSet):
-    queryset = Product.objects.filter(is_deleted=False).all()
-    serializer_class = ProductBaseSerializer
+    def get_queryset(self):
+        # queryset = Order.objects.filter(Q(is_canceled=False) & Q(customer=self.request.user.customer)).prefetch_related("orderitems").all()
+        queryset = Order.objects.filter(Q(customer=self.request.user.customer) & ~Q(status=Order.ORDER_STATUS_DELETED)).prefetch_related("orderitems").all()
+        return queryset
 
     def get_serializer_class(self):
-        if self.action == "list" or self.action == "retrieve":
-            return ProductGetSerializer
+        if self.action == 'create':
+            return OrderCreateSerializer
+        elif self.action == 'update':
+            return OrderSoftDeleteSerializer
+        else: 
+            return OrderGetSerializer
+
+
+# Get         => Get Order Detail         By Manager
+# Get List    => Get All Orders           By Manager
+# Update      => Update Order Detail      By Manager
+# Soft Delete => Update is_canceled=True  By Manager 
+class OrderByManagerViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, GenericViewSet):
+    queryset = Order.objects.prefetch_related("orderitems").select_related("customer__user").all()
+    permission_classes = [IsAdminUser]
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return OrderListByManagerSerializer
+        elif self.action == 'update':
+            return OrderUpdateByManagerSerializer
         else:
-            return ProductEditSerializer
+            return OrderDetailByManagerSerializer
+        
+#################### Customer ####################
+# Get         => Get Customer Info      By Self
+# Update      => Update Customer Info   By Self
+# Soft Delete => Update is_active=False By Self
+class CustomerBySelfViewSet(
+    mixins.RetrieveModelMixin, mixins.UpdateModelMixin, GenericViewSet
+):
+    serializer_class = CustomerBySelfSerializer
+    permission_classes = [IsInCustomerGroup]
 
-    def get_serializer_context(self):
-        return {"request": self.request}
+    def get_queryset(self):
+        queryset = Customer.objects.select_related("user").filter(
+            user=self.request.user
+        )
+        return queryset
 
-    def destroy(self, request, *args, **kwargs):
-        if OrderItem.objects.filter(product_id=kwargs["pk"]).count() > 0:
-            return Response(
-                {
-                    "error": "Product cannot be deleted because it is associated with an order item"
-                },
-                status=status.HTTP_405_METHOD_NOT_ALLOWED,
-            )
-        return super().destroy(request, *args, **kwargs)
+
+# Get List    => Get All Customers          By Manager
+# Get         => Get Customer's Detail Info By Manager
+# Update      => Update Customer Info       By Manager
+# Soft Delete => Update is_active=False     By Manager
+class CustomerByManagerViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    GenericViewSet,
+):
+    queryset = Customer.objects.select_related("user").all()
+    serializer_class = CustomerByManagerSerializer
+    permission_classes = [IsAdminUser]
+
+
+#################### Products ####################
+# Get List => Get All Products     By Anyone
+# Get      => Get Product's Detail By Anyone
+class ProductByAnyoneViewSet(
+    mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewSet
+):
+    queryset = (
+        Product.objects.filter(is_deleted=False).prefetch_related("promotions").all()
+    )
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return ProductListSerializer
+        else:
+            return ProductDetailSerializer
+
+
+# Create      => Create Prodcut         By Admin
+# Update      => Update Product Detail  By Admin
+# Soft Delete => Update is_deleted=True By Admin
+class ProductByManagerViewSet(
+    mixins.UpdateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.CreateModelMixin,
+    GenericViewSet,
+):
+    queryset = (
+        Product.objects.filter(is_deleted=False).prefetch_related("promotions").all()
+    )
+    permission_classes = [IsAdminUser]
+    serializer_class = ProductByManagerSerializer
