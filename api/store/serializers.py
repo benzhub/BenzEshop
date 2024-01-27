@@ -2,25 +2,38 @@ from django.db import transaction
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers
-from .models import Product, Promotion, Customer, Order, OrderItem
+from .models import Product, ProductImage, Promotion, Customer, Order, OrderItem
 from decimal import Decimal
 from django.db.models.signals import pre_save
 
 class OrderItemGetSerializer(serializers.ModelSerializer):
+    product_id = serializers.IntegerField(source="product.id")
+    title = serializers.CharField(source="product.title")
     class Meta:
         model = OrderItem
-        fields = ("id", "product", "quantity", "unit_price",)
+        fields = ("product_id", "title", "quantity", "unit_price",)
 
 class OrderGetSerializer(serializers.ModelSerializer):
+    total_price = serializers.SerializerMethodField(method_name="get_total_price")
     orderitems = OrderItemGetSerializer(many=True, read_only=True)
+    order_status = serializers.CharField(source="status", read_only=True)
     class Meta:
         model = Order
-        fields = ("id", "placed_at", "payment_status", "status", "orderitems",)
+        fields = ("id", "total_price", "placed_at", "payment_status", "order_status", "orderitems",)
+
+    def get_total_price(self, order: Order):
+        total_price = 0
+        orderitems = order._prefetched_objects_cache.get("orderitems")
+        if orderitems is not None:
+            for order_item in orderitems:
+                total_price += order_item.unit_price * order_item.quantity
+        return total_price
+
 
 # The order can be canceled before 10 minutes.
 class OrderSoftDeleteSerializer(serializers.ModelSerializer):
     ORDER_STATUS_CHOICES = [
-        (Order.ORDER_STATUS_Pending, "Pending"),
+        (Order.ORDER_STATUS_PENDING, "Pending"),
         (Order.ORDER_STATUS_CANCELED, "Canceled")
     ]
     status = serializers.ChoiceField(
@@ -92,7 +105,10 @@ class OrderCreateSerializer(serializers.ModelSerializer):
 
             if quantity > product_instance.inventory:
                 raise serializers.ValidationError(
-                    {"quantity": f"Order item quantity: {quantity} is greater than the product: {product_id} inventory"}
+                    {
+                        "product": product_id,
+                        "quantity": f"Order item quantity: {quantity} is greater than the product inventory"
+                    }
                 )
 
             product_instance.inventory -= quantity
@@ -111,37 +127,45 @@ class OrderCreateSerializer(serializers.ModelSerializer):
 class OrderListByManagerSerializer(serializers.ModelSerializer):
     total_price = serializers.SerializerMethodField(method_name="get_total_price")
     total_quantity = serializers.SerializerMethodField(method_name="get_total_quantity")
+    customer_id = serializers.IntegerField(source="customer.id", read_only=True)
     customer_email = serializers.EmailField(source="customer.user.email", read_only=True)
     phone_number = serializers.CharField(source="customer.phone_number", read_only=True)
+    order_status = serializers.CharField(source="status", read_only=True)
     class Meta:
         model = Order
-        fields = ("id", "total_price", "total_quantity", "customer", "customer_email", "phone_number", "payment_status", "placed_at", "status", "cancel_result",)
+        fields = ("id", "total_price", "total_quantity", "customer_id", "customer_email", "phone_number", "payment_status", "placed_at", "order_status", "cancel_result",)
 
     def get_total_price(self, order:Order):
         total_price = 0
         orderitems = order._prefetched_objects_cache.get("orderitems")
-        for order_item in orderitems:
-            total_price += order_item.unit_price * order_item.quantity
+        if orderitems is not None:
+            for order_item in orderitems:
+                total_price += order_item.unit_price * order_item.quantity
         return total_price
     
     def get_total_quantity(self, order: Order):
         total_quantity = 0
         orderitems = order._prefetched_objects_cache.get("orderitems")
-        for order_item in orderitems:
-            total_quantity += order_item.quantity
+        if orderitems is not None:
+            for order_item in orderitems:
+                total_quantity += order_item.quantity
         return total_quantity   
     
 class OrderDetailByManagerSerializer(OrderListByManagerSerializer):
     orderitems = OrderItemGetSerializer(many=True, read_only=True)
-    customer = serializers.IntegerField(source="customer.id", read_only=True)
+    customer_id = serializers.IntegerField(source="customer.id", read_only=True)
+    order_status = serializers.CharField(source="status", read_only=True)
     class Meta:
         model = Order
-        fields = "__all__"
+        exclude = ["status", "customer"]
+
     
 class OrderUpdateByManagerSerializer(serializers.ModelSerializer):
+    order_status = serializers.CharField(source="status")
     class Meta:
         model = Order
-        fields = ("payment_status", "cancel_result", "status",)
+        fields = ("payment_status", "cancel_result", "order_status",)
+    
 
 # Get => Get Customer Info By Self
 # Update => Update Customer Info
@@ -186,7 +210,7 @@ class CustomerByManagerSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source="user.username")
     first_name = serializers.CharField(source="user.first_name")
     last_name = serializers.CharField(source="user.last_name")
-    last_login = serializers.DateTimeField(source="user.last_login")
+    last_login = serializers.DateTimeField(source="user.last_login", read_only=True)
     is_active = serializers.BooleanField(source="user.is_active")
 
     class Meta:
@@ -217,12 +241,17 @@ class CustomerByManagerSerializer(serializers.ModelSerializer):
         return instance
 
 
+class ProductImagesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = ("id", "image",)
+
 class ProductListSerializer(serializers.ModelSerializer):
     discount = serializers.SerializerMethodField(method_name="get_discount")
 
     class Meta:
         model = Product
-        fields = ("id", "title", "unit_price", "discount", "inventory",)
+        fields = ("id", "title", "unit_price", "discount", "inventory", "thumb",)
 
     def get_discount(self, product: Product):
         promotions = product._prefetched_objects_cache.get("promotions")
@@ -233,6 +262,7 @@ class ProductListSerializer(serializers.ModelSerializer):
 
 
 class ProductDetailSerializer(ProductListSerializer):
+    images = ProductImagesSerializer(many=True, read_only=True)
     class Meta:
         model = Product
         fields = (
@@ -242,6 +272,7 @@ class ProductDetailSerializer(ProductListSerializer):
             "discount",
             "inventory",
             "description",
+            "images",
         )
 
 
@@ -253,8 +284,7 @@ class PromotionSerializers(serializers.ModelSerializer):
 
 # 一次只能選一種折購優惠
 class ProductByManagerSerializer(serializers.ModelSerializer):
-    promotions = PromotionSerializers(many=True, read_only=True)
-    promotion_id = serializers.IntegerField(write_only=True, required=False)
+    images = ProductImagesSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
@@ -265,32 +295,10 @@ class ProductByManagerSerializer(serializers.ModelSerializer):
             "unit_price",
             "description",
             "inventory",
-            "promotions",
-            "promotion_id",
+            "thumb",
+            "images",
             "is_deleted",
         )
-
-    def update(self, instance, validated_data):
-        with transaction.atomic():
-            instance.title = validated_data.get("title", instance.title)
-            instance.slug = validated_data.get("slug", instance.slug)
-            instance.description = validated_data.get(
-                "description", instance.description
-            )
-            instance.unit_price = validated_data.get("unit_price", instance.unit_price)
-            instance.inventory = validated_data.get("inventory", instance.inventory)
-
-            promotion_id = validated_data.pop("promotion_id", [])
-            if promotion_id:
-                try:
-                    instance.promotions.clear()
-                    promotion_instance = Promotion.objects.get(pk=promotion_id)
-                    if promotion_instance.discount > instance.unit_price:
-                        raise serializers.ValidationError({"unit_price": f"Discount: {promotion_instance.discount} is greater than the product's unit price: {instance.unit_price}"})
-                    instance.promotions.add(promotion_instance)
-                except Promotion.DoesNotExist:
-                    raise serializers.ValidationError({"promotions": f"Promotion with id {promotion_id} does not exist."})
-            return instance
 
     def create(self, validated_data):
         with transaction.atomic():

@@ -67,6 +67,7 @@ class Product(models.Model):
     last_update = models.DateTimeField(auto_now=True)  # 只要有更新就會記錄時間
     # last_update = models.DateTimeField(auto_now_add=True) # 只有在第一次創建的時候才會記錄時間
     promotions = models.ManyToManyField(Promotion, related_name="products", default=1)
+    thumb = models.ImageField(upload_to='store/images/thumbs')
     is_deleted = models.BooleanField(default=False)
 
     def __str__(self) -> str:
@@ -75,13 +76,21 @@ class Product(models.Model):
     class Meta:
         ordering = ["title"]
 
+class ProductImage(models.Model):
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name='images')
+    # 這樣圖片不會儲存在資料庫中， /media/store/images
+    image = models.ImageField(upload_to='store/images')
+
+    def __str__(self):
+        return f"Image for {self.product.title}"
 
 class Order(models.Model):
     PAYMENT_STATUS_PENDING   = "P"
     PAYMENT_STATUS_COMPLETED = "C"
     PAYMENT_STATUS_FAILED    = "F"
 
-    ORDER_STATUS_Pending   = "P"
+    ORDER_STATUS_PENDING   = "P"
     ORDER_STATUS_COMPLETED = "C"
     ORDER_STATUS_CANCELED  = "X"
     ORDER_STATUS_DELETED   = "D"
@@ -93,7 +102,7 @@ class Order(models.Model):
     ]
     
     ORDER_STATUS_CHOICES = [
-        (ORDER_STATUS_Pending, "Pending"),
+        (ORDER_STATUS_PENDING, "Pending"),
         (ORDER_STATUS_COMPLETED, "Completed"),
         (ORDER_STATUS_CANCELED, "Canceled"),
         (ORDER_STATUS_DELETED, "Deleted"),
@@ -104,7 +113,7 @@ class Order(models.Model):
     )
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT, related_name="orders")
     cancel_result = models.CharField(max_length=255, blank=True)
-    status = models.CharField(max_length=1, choices=ORDER_STATUS_CHOICES, default=ORDER_STATUS_Pending)
+    status = models.CharField(max_length=1, choices=ORDER_STATUS_CHOICES, default=ORDER_STATUS_PENDING)
     class Meta:
         permissions = [
             ('cancel_order', 'Can cancel order')

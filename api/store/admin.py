@@ -48,3 +48,7 @@ class OrderAdmin(admin.ModelAdmin):
 @admin.register(models.Promotion)
 class PromotionAdmin(admin.ModelAdmin):
     list_display = ["id", "discount", "description"]
+
+@admin.register(models.ProductImage)
+class ProductImageAdmin(admin.ModelAdmin):
+    list_display = ["id", "product", "image"]

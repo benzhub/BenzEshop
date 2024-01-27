@@ -68,10 +68,7 @@ class UserCreateSerializer(BaseUserCreateSerializer):
 
 
 class UserSerializer(BaseUserSerializer):
-    id = serializers.SerializerMethodField(method_name="get_customer_id", read_only=True)
+    customer_id = serializers.IntegerField(source="customer.id", read_only=True)
     class Meta(BaseUserSerializer.Meta):
-        fields = ["id", "username", "email", "first_name", "last_name"]
-    
-    def get_customer_id(self, user: User):
-        return user.customer.id
+        fields = ("customer_id", "username", "email", "first_name", "last_name",)
 

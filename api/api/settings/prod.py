@@ -18,6 +18,10 @@ ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+
 REST_FRAMEWORK = {
     "COERCE_DECIMAL_TO_STRING": False,
     "DEFAULT_RENDERER_CLASSES": [
@@ -38,11 +42,27 @@ SIMPLE_JWT = {
    )
 }
 
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
+DOMAIN = os.getenv("DOMAIN")
+SITE_NAME = os.getenv("SITE_NAME")
+
 DJOSER = {
+    "EMAIL": {
+        "activation": "djoser.email.ActivationEmail",
+        "confirmation": "djoser.email.ConfirmationEmail",
+        "password_reset": "djoser.email.PasswordResetEmail",
+        "password_changed_confirmation": "djoser.email.PasswordChangedConfirmationEmail",
+    },
+    "PASSWORD_RESET_CONFIRM_URL": "#/password/reset/confirm/{uid}/{token}",
+    "USERNAME_RESET_CONFIRM_URL": "#/username/reset/confirm/{uid}/{token}",
+    "ACTIVATION_URL": "/auth/users/activation/{uid}/{token}",
+    "SEND_ACTIVATION_EMAIL": True,
+    "SEND_RESET_PASSWORD_EMAIL": True,
+    'SEND_CONFIRMATION_EMAIL': True,
     "SERIALIZERS": {
         "user_create": "core.serializers.UserCreateSerializer",
         "current_user": "core.serializers.UserSerializer",
-    }
+    },
 }
 
 SIMPLE_JWT = {
@@ -61,9 +81,9 @@ INSTALLED_APPS = [
     "store",
     "tags",
     "likes",
-    "core",
-    "djoser",
     "storages",
+    "core",
+    "djoser"
 ]
 
 AUTH_USER_MODEL = "core.User"
