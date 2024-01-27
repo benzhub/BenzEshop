@@ -53,5 +53,5 @@ def order_pre_save(sender, instance, **kwargs):
 @receiver(post_save, sender=Order)
 def order_post_save(sender, instance, created, **kwargs):
     if created:
-        # send order detail email
+        # TODO: send order details to customer by email
         return
