@@ -1,6 +1,7 @@
 from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.permissions import IsAdminUser
+from rest_framework.exceptions import PermissionDenied
 from .models import Product, Order, Customer, ProductImage
 from .permissions import IsInCustomerGroup
 from django.db.models import Q
@@ -85,7 +86,7 @@ class OrderByManagerViewSet(
 # Update      => Update Customer Info   By Self
 # Soft Delete => Update is_active=False By Self
 class CustomerBySelfViewSet(
-    mixins.RetrieveModelMixin, mixins.UpdateModelMixin, GenericViewSet
+    mixins.RetrieveModelMixin, mixins.ListModelMixin, mixins.UpdateModelMixin, GenericViewSet
 ):
     serializer_class = CustomerBySelfSerializer
     permission_classes = [IsInCustomerGroup]
@@ -94,6 +95,8 @@ class CustomerBySelfViewSet(
         queryset = Customer.objects.select_related("user").filter(
             user=self.request.user
         )
+        if not queryset.first():
+            raise PermissionDenied("You don't have the necessary credentials for the current user.")
         return queryset
 
 

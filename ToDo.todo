@@ -4,6 +4,7 @@ To Do Task:
     ☐ @low Using Postman end to end to test django drf api 
     ✔ @today product's image nested route @done (1/27/2024, 10:46:01 PM)
     ☐ @low product's image delete or soft delete
+    ☐ fix customer viewset and serializers context when creating an order
 
     ☐ @high create storefront => Next.js + Typescript + TailwindCSS + DaisyUI
     ☐ @high create dashboard  => React.js + Typescript + TailwindCSS + DaisyUI

@@ -47,11 +47,11 @@ class OrderSoftDeleteSerializer(serializers.ModelSerializer):
  
     def update(self, instance, validated_data):
         if instance.status == Order.ORDER_STATUS_CANCELED or instance.status == Order.ORDER_STATUS_DELETED:
-            raise serializers.ValidationError("The order has been canceled or deleted; it cannot be changed.")
+            raise serializers.ValidationError({"message": "The order has been canceled or deleted; it cannot be changed."})
 
         time_difference = timezone.now() - instance.placed_at
         if time_difference.total_seconds() > 600:  
-            raise serializers.ValidationError("This order cannot be canceled after 10 minutes.")
+            raise serializers.ValidationError({"message": "This order cannot be canceled after 10 minutes."})
 
         return super().update(instance, validated_data)
 
@@ -60,7 +60,6 @@ class OrderItemSerializer(serializers.Serializer):
     quantity = serializers.IntegerField()
 
 class OrderCreateSerializer(serializers.ModelSerializer):
-    products_info = {}
     products = OrderItemSerializer(write_only=True, many=True)
 
     class Meta:
@@ -68,18 +67,12 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         fields = ("products",)
 
     def validate(self, attrs):
-        request_user = self.context["request"].user
-
-        not_allowed_keys = ["products"]
-        self.products_info = {
-            key: value for key, value in attrs.items() if key in not_allowed_keys
-        }
-        filtered_attrs = {
-            key: value for key, value in attrs.items() if key not in not_allowed_keys
-        }
-        filtered_attrs["customer_id"] = request_user.customer.id
-
-        return super().validate(filtered_attrs)
+        products_info = attrs.pop('products', [])
+        if not products_info:
+            raise serializers.ValidationError({"message": "Products list cannot be empty"})
+        self.context["products_info"] = products_info
+        attrs["customer_id"] = self.context["request"].user.customer.id
+        return super().validate(attrs)
 
     def create(self, validated_data):
         with transaction.atomic():
@@ -89,26 +82,25 @@ class OrderCreateSerializer(serializers.ModelSerializer):
 
     def create_order_items(self, order):
         order_items_to_create = []
-        product_ids = [item["product"] for item in self.products_info["products"]]
+        product_ids = [item["product"] for item in self.context["products_info"]]
         products = Product.objects.filter(pk__in=product_ids)
-
         product_instances = {product.id: product for product in products}
 
-        for item in self.products_info["products"]:
+        for item in self.context["products_info"]:
             product_id = item["product"]
             quantity = item["quantity"]
             
             product_instance = product_instances.get(product_id)
 
             if not product_instance:
-                raise serializers.ValidationError({"product": f"Product with ID {product_id} not found"})
+                raise serializers.ValidationError({"message": f"Product with ID {product_id} not found"})
 
             if quantity > product_instance.inventory:
                 raise serializers.ValidationError(
-                    {
-                        "product": product_id,
-                        "quantity": f"Order item quantity: {quantity} is greater than the product inventory"
-                    }
+                    {"message": {
+                            "product": product_id,
+                            "quantity": f"Order item quantity: {quantity} is greater than the product inventory"
+                        }}
                 )
 
             product_instance.inventory -= quantity
@@ -171,6 +163,7 @@ class OrderUpdateByManagerSerializer(serializers.ModelSerializer):
 # Update => Update Customer Info
 # Delete => Soft Delete(Update is_active=False)
 class CustomerBySelfSerializer(serializers.ModelSerializer):
+    customer_id = serializers.IntegerField(source="id", read_only=True)
     email = serializers.EmailField(source="user.email", read_only=True)
     membership = serializers.CharField(read_only=True)
     first_name = serializers.CharField(source="user.first_name")
@@ -180,6 +173,7 @@ class CustomerBySelfSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
         fields = (
+            "customer_id",
             "email",
             "first_name",
             "last_name",
@@ -319,8 +313,8 @@ class ProductByManagerSerializer(serializers.ModelSerializer):
                 try:
                     promotion_instance = Promotion.objects.get(pk=promotion_id)
                     if promotion_instance.discount > instance.unit_price:
-                        raise serializers.ValidationError({"unit_price": f"Discount: {promotion_instance.discount} is greater than the product's unit price: {instance.unit_price}"})
+                        raise serializers.ValidationError({"message": f"Discount: {promotion_instance.discount} is greater than the product's unit price: {instance.unit_price}"})
                     instance.promotions.add(promotion_instance)
                 except Promotion.DoesNotExist:
-                    raise serializers.ValidationError({"promotions": f"Promotion with id {promotion_id} does not exist."})
+                    raise serializers.ValidationError({"message": f"Promotion with id {promotion_id} does not exist."})
             return instance
