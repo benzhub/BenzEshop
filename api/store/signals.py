@@ -3,6 +3,7 @@ from django.dispatch import receiver
 from django.db import transaction
 from .models import Order, Product
 from rest_framework import serializers
+from django.core.exceptions import ObjectDoesNotExist
 
 # NoWork
 #### Cancel(X) or Delete(D) => Cancel(X) or Delete(D)
@@ -19,7 +20,13 @@ from rest_framework import serializers
 def order_pre_save(sender, instance, **kwargs):
     # Consume(-1)，Restore(1)
     inventory = 0
-    previous_instance = sender.objects.get(pk=instance.pk)
+
+    try:
+        previous_instance = sender.objects.get(pk=instance.pk)
+    except ObjectDoesNotExist:
+        # raise serializers.ValidationError("Test create order")
+        return
+
     # print(f"previous status: {previous_instance.status}")
     # print(f"new status: {instance.status}")
     if previous_instance.status == Order.ORDER_STATUS_CANCELED or previous_instance.status == Order.ORDER_STATUS_DELETED:
@@ -52,6 +59,7 @@ def order_pre_save(sender, instance, **kwargs):
 
 @receiver(post_save, sender=Order)
 def order_post_save(sender, instance, created, **kwargs):
-    if created:
-        # TODO: send order details to customer by email
-        return
+    pass
+    # if created:
+    #     # TODO: send order details to customer by email
+    #     pass

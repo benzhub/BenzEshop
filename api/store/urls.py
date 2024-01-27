@@ -7,7 +7,7 @@ router.register("products", views.ProductByAnyoneViewSet, basename="products")
 router.register(
     "manage/products", views.ProductByManagerViewSet, basename="manage-products"
 )
-router.register("images", views.ProductImageByManagerViewSet, basename="images")
+# router.register("images", views.ProductImageByManagerViewSet, basename="images")
 
 router.register("customer/info", views.CustomerBySelfViewSet, basename="customer-info")
 router.register(
@@ -19,7 +19,7 @@ router.register(
 )
 router.register("manage/orders", views.OrderByManagerViewSet, basename="manage-order")
 
-product_images_router = routers.NestedSimpleRouter(router, r"images", lookup="images")
+# product_images_router = routers.NestedSimpleRouter(router, r"images", lookup="images")
 product_images_router = routers.NestedSimpleRouter(router, r'manage/products', lookup='products')
 product_images_router.register(r'images', views.ProductImageByManagerViewSet, basename='product-images')
 
