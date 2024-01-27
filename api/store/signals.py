@@ -34,7 +34,7 @@ def order_pre_save(sender, instance, **kwargs):
         if instance.status == Order.ORDER_STATUS_CANCELED or instance.status == Order.ORDER_STATUS_DELETED:
             inventory = 1
     
-    if inventory is 0:
+    if inventory == 0:
         return
     
     orderitems = instance._prefetched_objects_cache.get("orderitems")
@@ -43,7 +43,7 @@ def order_pre_save(sender, instance, **kwargs):
     
     product_update_list = []
     for orderitem in orderitems:
-        if (inventory is -1) and (orderitem.product.inventory < orderitem.quantity):
+        if (inventory == -1) and (orderitem.product.inventory < orderitem.quantity):
             raise serializers.ValidationError(f"Insufficient inventory({orderitem.product.inventory}) for product '{orderitem.product.title}({orderitem.quantity})'")
         product_update_list.append(Product(id=orderitem.product.id, inventory=(orderitem.product.inventory + (orderitem.quantity * inventory))) )
     with transaction.atomic():

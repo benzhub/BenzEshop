@@ -241,6 +241,17 @@ class CustomerByManagerSerializer(serializers.ModelSerializer):
         return instance
 
 
+class ProductImageByManagerSerializers(serializers.ModelSerializer):
+    product = serializers.IntegerField(source="product.id", read_only=True)
+    class Meta:
+        model = ProductImage
+        fields = "__all__"
+
+    def create(self, validated_data):
+        product_id = self.context['product_id']
+        return ProductImage.objects.create(product_id=product_id, **validated_data)
+
+
 class ProductImagesSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage

@@ -34,12 +34,10 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-   'AUTH_HEADER_TYPES': ('JWT',),
-   'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-   'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-   'AUTH_TOKEN_CLASSES': (
-       'rest_framework_simplejwt.tokens.AccessToken',
-   )
+    "AUTH_HEADER_TYPES": ("JWT",),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
 }
 
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
@@ -58,7 +56,7 @@ DJOSER = {
     "ACTIVATION_URL": "/auth/users/activation/{uid}/{token}",
     "SEND_ACTIVATION_EMAIL": True,
     "SEND_RESET_PASSWORD_EMAIL": True,
-    'SEND_CONFIRMATION_EMAIL': True,
+    "SEND_CONFIRMATION_EMAIL": True,
     "SERIALIZERS": {
         "user_create": "core.serializers.UserCreateSerializer",
         "current_user": "core.serializers.UserSerializer",
@@ -83,7 +81,7 @@ INSTALLED_APPS = [
     "likes",
     "storages",
     "core",
-    "djoser"
+    "djoser",
 ]
 
 AUTH_USER_MODEL = "core.User"

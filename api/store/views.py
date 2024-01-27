@@ -3,11 +3,12 @@ from rest_framework.viewsets import GenericViewSet
 from rest_framework.permissions import IsAdminUser
 from .models import Product, Order, Customer, ProductImage
 from .permissions import IsInCustomerGroup
-from django.db.models import Q, Prefetch
+from django.db.models import Q
 from .serializers import (
     ProductListSerializer,
     ProductDetailSerializer,
     ProductByManagerSerializer,
+    ProductImageByManagerSerializers,
     CustomerBySelfSerializer,
     CustomerByManagerSerializer,
     OrderCreateSerializer,
@@ -147,3 +148,14 @@ class ProductByManagerViewSet(
     )
     permission_classes = [IsAdminUser]
     serializer_class = ProductByManagerSerializer
+
+class ProductImageByManagerViewSet(mixins.RetrieveModelMixin, mixins.ListModelMixin, mixins.CreateModelMixin, mixins.UpdateModelMixin, GenericViewSet):
+    queryset = ProductImage.objects.all()
+    serializer_class = ProductImageByManagerSerializers
+    permission_classes = [IsAdminUser]
+
+    def get_queryset(self):
+        return ProductImage.objects.filter(product_id=self.kwargs['products_pk'])
+    
+    def get_serializer_context(self):
+        return {'product_id': self.kwargs['products_pk']}
