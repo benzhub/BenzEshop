@@ -2,7 +2,7 @@
 /set_aws_env_vars.py
 /zappa_settings.json
 
-
+static/
 mediafiles/
 
 # Created by https://www.gitignore.io
