@@ -6,6 +6,7 @@ To Do Task:
     ☐ @low product's image delete or soft delete
     ☐ fix customer viewset and serializers context when creating an order
 
+    ✔ @high from MySQL change to PostgreSQL @done (1/31/2024, 3:21:54 AM)
     ☐ @high create storefront => Next.js + Typescript + TailwindCSS + DaisyUI
     ☐ @high create dashboard  => React.js + Typescript + TailwindCSS + DaisyUI
 

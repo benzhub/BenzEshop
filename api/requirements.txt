@@ -19,6 +19,7 @@ djangorestframework-simplejwt==5.3.1
 djoser==2.2.2
 drf-nested-routers==0.93.5
 durationpy==0.6
+ez_setup==0.9
 hjson==3.1.0
 idna==3.6
 jmespath==1.0.1
@@ -28,6 +29,8 @@ mysqlclient==2.2.1
 oauthlib==3.2.2
 pillow==10.2.0
 placebo==0.9.0
+psycopg2==2.9.9
+psycopg2-binary==2.9.9
 pycparser==2.21
 PyJWT==2.8.0
 PyMySQL==1.1.0
