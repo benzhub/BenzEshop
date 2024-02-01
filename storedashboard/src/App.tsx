@@ -1,12 +1,12 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import AppLayout from './ui/AppLayout';
-import Dashboard from './pages/Dashboard';
+import AppLayout from "./ui/AppLayout";
+import Dashboard from "./pages/Dashboard";
 import Customer from "./pages/Customer";
 import Order from "./pages/Order";
 import Product from "./pages/Product";
+import Login from "./pages/Login";
 
 function App() {
-
   return (
     <BrowserRouter>
       <Routes>
@@ -17,9 +17,10 @@ function App() {
           <Route path="order" element={<Order />} />
           <Route path="product" element={<Product />} />
         </Route>
+        <Route path="login" element={<Login />} />
       </Routes>
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;
