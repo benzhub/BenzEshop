@@ -52,3 +52,17 @@ module.exports = {
   plugins: [require("daisyui")],
 }
 ```
+
+### daisyUI themes
+https://daisyui.com/docs/themes/
+
+tailwind.config.js
+```javascript
+module.exports = {
+  //...
+  daisyui: {
+    themes: ["light", "dark", "cupcake"],
+  },
+}
+```
+<html data-theme="cupcake"></html>
