@@ -6,6 +6,16 @@ export SQL_DB_USERNAME="<DB Username>"
 export SQL_DB_PASSWORD="<DB Password>"
 export SQL_DB_HOST="<DB Host ex: https://mydomain.com>"
 export SQL_DB_PORT="<DB Port (3306)>"
+
+export DOMAIN="127.0.0.1:8000"
+export DEFAULT_FROM_EMAIL="support@mail.example.com"
+export SITE_NAME="example.com"
+
+export TO_EMAIL_ADDRESS="testemailaccount@example.com"
+export EMAIL_HOST_NAME="mail.example.com"
+export SPARKPOST_API_KEY=""
+export EMAIL_BACKEND="sparkpost.django.email_backend.SparkPostEmailBackend"
+
 export USE_S3_STATIC=""
 export CUSTOM_AWS_ACCESS_KEY_ID=""
 export CUSTOM_AWS_SECRET_ACCESS_KEY=""
@@ -19,6 +29,16 @@ export AWS_STORAGE_BUCKET_NAME=""
 # export SQL_DB_PASSWORD="<DB Password>"
 # export SQL_DB_HOST="<DB Host ex: https://mydomain.com>"
 # export SQL_DB_PORT="<DB Port (3306)>"
+
+# export DOMAIN="127.0.0.1:8000"
+# export DEFAULT_FROM_EMAIL="support@mail.example.com"
+# export SITE_NAME="example.com"
+
+# export TO_EMAIL_ADDRESS="testemailaccount@example.com"
+# export EMAIL_HOST_NAME="mail.example.com"
+# export SPARKPOST_API_KEY=""
+# export EMAIL_BACKEND="sparkpost.django.email_backend.SparkPostEmailBackend"
+
 # export USE_S3_STATIC=""
 # export CUSTOM_AWS_ACCESS_KEY_ID=""
 # export CUSTOM_AWS_SECRET_ACCESS_KEY=""

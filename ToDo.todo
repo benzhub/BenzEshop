@@ -1,14 +1,14 @@
 
 To Do Task:
-    ☐ @low Sending the order details after Creating a new Order
+    ☐ @low Sending the order details By Eamil after Creating a new Order
     ☐ @low Using Postman end to end to test django drf api 
     ✔ @today product's image nested route @done (1/27/2024, 10:46:01 PM)
     ☐ @low product's image delete or soft delete
-    ☐ fix customer viewset and serializers context when creating an order
+    ✔ fix customer viewset and serializers context when creating an order @done (2/1/2024, 7:26:32 PM)
 
     ✔ @high from MySQL change to PostgreSQL @done (1/31/2024, 3:21:54 AM)
     ☐ @high create storefront => Next.js + Typescript + TailwindCSS + DaisyUI
-    ☐ @high create dashboard  => React.js + Typescript + TailwindCSS + DaisyUI
+    ✔ @high create dashboard  => React.js + Typescript + TailwindCSS + DaisyUI @done (2/1/2024, 7:39:51 PM)
 
 
 How to use

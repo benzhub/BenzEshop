@@ -7,6 +7,16 @@ environment_variables = {
         "SQL_DB_PASSWORD": "<DB Password>",
         "SQL_DB_HOST": "<DB Host ex: https://mydomain.com>",
         "SQL_DB_PORT": "3306",
+
+"DOMAIN":"electechpro.com",
+        "DEFAULT_FROM_EMAIL":"support@mail.electechpro.com",
+        "SITE_NAME":"electechpro.com",
+
+        "TO_EMAIL_ADDRESS":"test@test.com",
+        "EMAIL_HOST_NAME":"test@mail.test.com",
+        "SPARKPOST_API_KEY":"",
+        "EMAIL_BACKEND":"sparkpost.django.email_backend.SparkPostEmailBackend",
+
         "USE_S3_STATIC": "True",
         "CUSTOM_AWS_ACCESS_KEY_ID": "AWS Access Key",
         "CUSTOM_AWS_SECRET_ACCESS_KEY": "AWS secret access key",
