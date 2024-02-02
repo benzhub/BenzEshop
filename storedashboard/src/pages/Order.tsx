@@ -1,5 +1,7 @@
+import { PageLayout } from "../ui/PageLayout";
+
 const Order = () => {
-  return <div>Order</div>;
+  return <PageLayout title="Order">Order</PageLayout>;
 };
 
 export default Order;

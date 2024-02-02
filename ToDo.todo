@@ -8,9 +8,13 @@ To Do Task:
 
     ✔ @high from MySQL change to PostgreSQL @done (1/31/2024, 3:21:54 AM)
     ☐ @high create storefront => Next.js + Typescript + TailwindCSS + DaisyUI
+    ☐ @critical storefront Home Page && Product Page
+    ☐ @critical storefront React Redux Toolkit && JWT Auth
     ✔ @high create dashboard  => React.js + Typescript + TailwindCSS + DaisyUI @done (2/1/2024, 7:39:51 PM)
 
-    ☐ @high setting storedashboard TailwindCSS DasiyUI theme
+    ✔ @high setting storedashboard TailwindCSS DasiyUI theme @done (2/2/2024, 11:47:13 PM)
+    ✔ @high settting storedashboard React Query && JWT Auth @done (2/2/2024, 11:49:30 PM)
+    ☐ @critical setting storedashboard React Query PreFetch and cache 
 
 How to use
 New Task:

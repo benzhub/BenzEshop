@@ -1,7 +1,8 @@
+import { PageLayout } from "../ui/PageLayout"
 
 const Customer = () => {
   return (
-    <div>Customer</div>
+    <PageLayout title="Customer">Customer</PageLayout>
   )
 }
 
