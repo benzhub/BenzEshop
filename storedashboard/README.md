@@ -112,4 +112,38 @@ module.exports = {
   },
 }
 ```
+./index.html
+```html
 <html data-theme="cupcake"></html>
+```
+
+### 設定React Query
+https://tanstack.com/query/v3/docs/framework/react/installation
+```bash
+npm install @tanstack/react-query
+npm install @tanstack/react-query-devtools
+```
+
+
+### 設定時間日期格式
+```bash
+npm install --save date-fns
+```
+
+### 設定React Hook Form
+https://react-hook-form.com/
+```bash
+npm install react-hook-form
+```
+
+### 設定 zod
+https://www.npmjs.com/package/zod
+```bash
+npm i zod
+```
+
+### 設定 Notifications
+https://react-hot-toast.com/docs
+```bash
+npm install react-hot-toast
+```

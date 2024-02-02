@@ -23,6 +23,10 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173'
+]
+
 REST_FRAMEWORK = {
     "COERCE_DECIMAL_TO_STRING": False,
     "DEFAULT_RENDERER_CLASSES": [
@@ -83,6 +87,7 @@ INSTALLED_APPS = [
     "storages",
     "core",
     "djoser",
+    "corsheaders",
 ]
 
 AUTH_USER_MODEL = "core.User"
@@ -91,6 +96,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
