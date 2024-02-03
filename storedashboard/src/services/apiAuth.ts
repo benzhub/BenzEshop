@@ -24,10 +24,10 @@ export async function login(userLogin: UserLogin): Promise<AuthToken> {
   }
 }
 
-export async function verifyToken(): Promise<UserInfo> {
+export async function getCurrentUser(): Promise<UserInfo> {
+  const authToken = localStorage.getItem("token");
+  if(!authToken) throw new Error("Credential invalidated!");
   try {
-    const authToken = localStorage.getItem("token");
-    if(!authToken) throw new Error("Credential invalidated!");
     const config = {
       method: "get",
       url: `${apiUrl}/auth/users/me/`,
@@ -40,4 +40,8 @@ export async function verifyToken(): Promise<UserInfo> {
   } catch (error) {
     handleAxiosError(error);
   }
+}
+
+export async function logout() {
+  localStorage.clear();
 }

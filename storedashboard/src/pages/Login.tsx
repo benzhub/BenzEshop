@@ -1,13 +1,10 @@
-import { useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useLogin } from "../features/auth/useLogin";
-import { useVerify } from "../features/auth/useVerify";
+import { useLogin } from "../features/authentication/useLogin";
 import { type UserLogin } from "../types/Auth";
 import toast from "react-hot-toast";
 import { z } from "zod";
 import Spinner from "../ui/Spinner";
 import Logo from "../ui/Logo";
-import { useEffect } from "react";
 
 const userLoginSchema = z
   .object({
@@ -23,16 +20,8 @@ const userLoginSchema = z
   .strict();
 
 const Login = () => {
-  const navigate = useNavigate()
-  const { isLoggingIn, login, isLoginSuccess } = useLogin();
-  const { isVerifySuccess } = useVerify();
+  const { isLoggingIn, login } = useLogin();
   const { register, handleSubmit } = useForm<UserLogin>();
-
-  useEffect(() => {
-    if (isLoginSuccess || isVerifySuccess) {
-      navigate("/");
-    }
-  }, [isLoginSuccess, isVerifySuccess, navigate]);
 
   const onSubmit: SubmitHandler<UserLogin> = (data) => {
     const validation = userLoginSchema.safeParse(data);
