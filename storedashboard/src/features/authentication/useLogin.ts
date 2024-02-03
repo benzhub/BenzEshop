@@ -16,9 +16,8 @@ export function useLogin() {
       localStorage.setItem('refresh', user.refresh);
       navigate('/dashboard', { replace: true });
     },
-    onError: () => {
-      // console.log('Error', err);
-      toast.error('Provided email or password are incorrect')
+    onError: (err) => {
+      toast.error(err.message);
     },
   });
 
