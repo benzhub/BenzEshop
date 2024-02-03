@@ -3,13 +3,14 @@ import { getCurrentUser } from "../../services/apiAuth";
 import toast from "react-hot-toast";
 
 export function useUser() {
-  const { isLoading, data: user, isSuccess: isAuthenticated, isError, error } = useQuery({
+  const { isLoading, data: userInfo, isSuccess: isAuthenticated, isError, error } = useQuery({
     queryKey: ["userInfo"],
     queryFn: getCurrentUser,
+    refetchOnWindowFocus: false, 
   });
   if(isError) {
     toast.error(error.message);
   }
 
-  return { isLoading, user, isAuthenticated };
+  return { isLoading, userInfo, isAuthenticated };
 }

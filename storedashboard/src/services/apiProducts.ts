@@ -1,5 +1,6 @@
-import axios, { AxiosError, AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 import { type Product } from "../types/Product";
+import { handleAxiosError } from "../utils/handleAxiosError";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export async function getProducts(): Promise<Product[]> {
@@ -12,13 +13,3 @@ export async function getProducts(): Promise<Product[]> {
   }
 }
 
-function handleAxiosError(error: unknown): never {
-  if (axios.isAxiosError(error)) {
-    const axiosError: AxiosError = error;
-    throw new Error(`Axios error: ${axiosError.message}`);
-  } else if (error instanceof Error) {
-    throw new Error(`Error: ${error.message}`);
-  } else {
-    throw new Error(`Unknown error occurred`);
-  }
-}

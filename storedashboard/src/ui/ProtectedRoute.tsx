@@ -12,6 +12,11 @@ export const ProtectedRoute = ({ children }: PropsWithChildren) => {
     },
     [isAuthenticated, isLoading, navigate],
   );
-  if (isLoading) return <div className="h-screen flex items-center justify-center"><Spinner /></div>;
+  if (isLoading)
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Spinner />
+      </div>
+    );
   if (isAuthenticated) return children;
 };

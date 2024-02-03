@@ -1,4 +1,4 @@
-import { SlideBarLink } from "../components/SlideBarLink";
+import { SlideBarLink } from "./SlideBarLink";
 import { IoHomeSharp } from "react-icons/io5";
 import { FaUserFriends } from "react-icons/fa";
 import { RiBillLine } from "react-icons/ri";

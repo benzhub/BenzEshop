@@ -15,8 +15,7 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       // one minute
-      // staleTime: 60 * 1000,
-      staleTime: 0,
+      staleTime: 60 * 1000,
     },
   },
 });
