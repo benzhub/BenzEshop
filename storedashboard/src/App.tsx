@@ -1,15 +1,16 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import AppLayout from "./ui/AppLayout";
 import Dashboard from "./pages/Dashboard";
-import Customer from "./pages/Customer";
-import Order from "./pages/Order";
+import Customers from "./pages/Customers";
+import Products from "./pages/Products";
 import Product from "./pages/Product";
+import Orders from "./pages/Orders";
 import Login from "./pages/Login";
 import PageNotFound from "./pages/PageNotFound";
-import { Toaster } from "react-hot-toast";
 import { ProtectedRoute } from "./ui/ProtectedRoute";
+import AppLayout from "./ui/AppLayout";
+import { Toaster } from "react-hot-toast";
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,8 +36,10 @@ function App() {
           >
             <Route index element={<Navigate replace to="dashboard" />} />
             <Route path="dashboard" element={<Dashboard />} />
-            <Route path="customer" element={<Customer />} />
-            <Route path="order" element={<Order />} />
+            <Route path="customers" element={<Customers />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="products" element={<Products />} />
+            <Route path="product/:productId" element={<Product />} />
             <Route path="product" element={<Product />} />
           </Route>
           <Route path="login" element={<Login />} />

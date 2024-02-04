@@ -10,7 +10,7 @@ const AppLayout = () => {
     <div className="grid h-screen grid-cols-[12rem,1fr] grid-rows-[auto,1fr]">
       <Slidebar />
       <Header/>
-      <main>
+      <main className="overflow-auto">
         <Outlet />
       </main>
     </div>

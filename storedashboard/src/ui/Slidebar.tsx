@@ -21,22 +21,22 @@ export const Slidebar = () => {
         </li>
         <li>
           <SlideBarLink
-            to="/customer"
-            title="Customer"
+            to="/customers"
+            title="Customers"
             icon={<FaUserFriends size={32} />}
           />
         </li>
         <li>
           <SlideBarLink
-            to="/product"
-            title="Product"
+            to="/products"
+            title="Products"
             icon={<BsGift size={32} />}
           />
         </li>
         <li>
           <SlideBarLink
-            to="/order"
-            title="Order"
+            to="/orders"
+            title="Orders"
             icon={<RiBillLine size={32} />}
           />
         </li>

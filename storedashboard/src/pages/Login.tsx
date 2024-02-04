@@ -8,7 +8,7 @@ import Logo from "../ui/Logo";
 
 const userLoginSchema = z
   .object({
-    username: z
+    userName: z
       .string()
       .min(4, "The username characters must be more than 4.")
       .max(20, "The username characters must be fewer than 20."),
@@ -26,8 +26,8 @@ const Login = () => {
   const onSubmit: SubmitHandler<UserLogin> = (data) => {
     const validation = userLoginSchema.safeParse(data);
     if (!validation.success) {
-      const { username, password } = validation.error.format();
-      if (username) toast.error(username._errors[0]);
+      const { userName, password } = validation.error.format();
+      if (userName) toast.error(userName._errors[0]);
       if (password) toast.error(password._errors[0]);
       return;
     }
@@ -51,7 +51,7 @@ const Login = () => {
                 type="text"
                 placeholder="UserName"
                 className="input input-bordered input-primary w-[90%]"
-                {...register("username")}
+                {...register("userName")}
               />
               <input
                 id="password"

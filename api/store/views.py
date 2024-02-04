@@ -143,11 +143,12 @@ class ProductByAnyoneViewSet(
 class ProductByManagerViewSet(
     mixins.UpdateModelMixin,
     mixins.RetrieveModelMixin,
+    mixins.ListModelMixin,
     mixins.CreateModelMixin,
     GenericViewSet,
 ):
     queryset = (
-        Product.objects.filter(is_deleted=False).prefetch_related("images", "promotions").all()
+        Product.objects.prefetch_related("images", "promotions").all()
     )
     permission_classes = [IsAdminUser]
     serializer_class = ProductByManagerSerializer

@@ -290,6 +290,7 @@ class PromotionSerializers(serializers.ModelSerializer):
 # 一次只能選一種折購優惠
 class ProductByManagerSerializer(serializers.ModelSerializer):
     images = ProductImagesSerializer(many=True, read_only=True)
+    discount = serializers.SerializerMethodField(method_name="get_discount")
 
     class Meta:
         model = Product
@@ -302,6 +303,7 @@ class ProductByManagerSerializer(serializers.ModelSerializer):
             "inventory",
             "thumb",
             "images",
+            "discount",
             "is_deleted",
         )
 
@@ -318,3 +320,10 @@ class ProductByManagerSerializer(serializers.ModelSerializer):
                 except Promotion.DoesNotExist:
                     raise serializers.ValidationError({"message": f"Promotion with id {promotion_id} does not exist."})
             return instance
+        
+    def get_discount(self, product: Product):
+        promotions = product._prefetched_objects_cache.get("promotions")
+        if promotions:
+            promotion = promotions.first()
+            return Decimal(promotion.discount)
+        return 0

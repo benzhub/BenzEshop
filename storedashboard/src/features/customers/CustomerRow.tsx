@@ -1,9 +1,9 @@
 import { FiMoreVertical } from "react-icons/fi";
-import { CustomerInfo } from "../../types/Customer";
+import { CustomerInfoSerialized } from "../../types/Customer";
 import Table from "../../ui/Table";
 
 type CustomerRowProps = {
-  customer: CustomerInfo;
+  customer: CustomerInfoSerialized;
   customeStyles?: string;
 };
 
@@ -11,14 +11,14 @@ const CustomerRow = ({ customer, customeStyles }: CustomerRowProps) => {
   const {
     id,
     email,
-    username: userName,
-    first_name: firstName,
-    last_name: lastName,
-    phone_number: phoneNumber,
-    birth_date: birthDate,
-    membership: memberShip,
-    last_login: lastLogin,
-    is_active: Active,
+    userName,
+    firstName,
+    lastName,
+    phoneNumber,
+    birthDate,
+    memberShip,
+    lastLogin,
+    Active,
   } = customer;
   return (
     <Table.Row customeStyles={customeStyles}>
@@ -31,7 +31,7 @@ const CustomerRow = ({ customer, customeStyles }: CustomerRowProps) => {
       <td>{birthDate}</td>
       <td>{memberShip}</td>
       <td>{lastLogin ? lastLogin : "-"}</td>
-      <td>{Active ? "Yes" : "No"}</td>
+      <td className={Active ? "text-green-500" : "text-orange-600"}>{Active ? "Yes" : "No"}</td>
       <td>
         <FiMoreVertical size={24} className="m-auto" />
       </td>

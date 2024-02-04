@@ -1,11 +1,14 @@
 import axios, { AxiosResponse } from "axios";
-import { type AuthToken, type UserLogin, type UserInfo } from "../types/Auth";
+import { type AuthToken, type UserLogin, type UserInfo, type UserInfoSerialized } from "../types/Auth";
 import { handleAxiosError } from "../utils/handleAxiosError";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export async function login(userLogin: UserLogin): Promise<AuthToken> {
   try {
-    const data = JSON.stringify(userLogin);
+    const data = JSON.stringify({
+      username: userLogin.userName,
+      password: userLogin.password
+    });
 
     const config = {
       method: "post",
@@ -24,7 +27,7 @@ export async function login(userLogin: UserLogin): Promise<AuthToken> {
   }
 }
 
-export async function getCurrentUser(): Promise<UserInfo> {
+export async function getCurrentUser(): Promise<UserInfoSerialized> {
   const authToken = localStorage.getItem("token");
   if(!authToken) throw new Error("Credential invalidated!");
   try {
@@ -36,7 +39,13 @@ export async function getCurrentUser(): Promise<UserInfo> {
       },
     }
     const response: AxiosResponse<UserInfo> = await axios.request(config);
-    return response.data;
+    return {
+      customerId: response.data.customer_id,
+      userName: response.data.username,
+      email: response.data.email,
+      firstName: response.data.first_name,
+      lastName: response.data.last_name,
+    }
   } catch (error) {
     handleAxiosError(error);
   }

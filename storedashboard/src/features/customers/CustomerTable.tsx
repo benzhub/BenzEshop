@@ -1,4 +1,4 @@
-import { CustomerInfo } from "../../types/Customer";
+import { CustomerInfoSerialized } from "../../types/Customer";
 import Empty from "../../ui/Empty";
 import Spinner from "../../ui/Spinner";
 import Table from "../../ui/Table";
@@ -8,10 +8,6 @@ import { useCustomers } from "./useCustomers";
 const CustomerTable = () => {
   const TABLEBASESTYLE = "grid grid-cols-[0.6fr_3fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] gap-4 bg-neutral items-center text-center p-4 font-extrabold text-lg border border-primary-content";
   const { isLoading, customers, isError, error } = useCustomers();
-  //   console.log(isLoading);
-  //   console.log(customers);
-  //   console.log(isError);
-  //   console.log(error);
   if (isLoading)
     return (
       <div className="pt-12">
@@ -42,7 +38,7 @@ const CustomerTable = () => {
       </Table.Header>
       <Table.Body
         data={customers}
-        render={(customer: CustomerInfo) => (
+        render={(customer: CustomerInfoSerialized) => (
           <CustomerRow
             key={customer.id}
             customer={customer}

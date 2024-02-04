@@ -3,11 +3,11 @@ import ProdcutRow from "./ProductRow";
 import Spinner from "../../ui/Spinner";
 import Empty from "../../ui/Empty";
 import Table from "../../ui/Table";
-import { ProductInfo } from "../../types/Product";
+import { ProductInfoSerialized } from "../../types/Product";
 
 
 const ProductTable = () => {
-  const TABLEBASESTYLE = "grid grid-cols-[0.6fr_1fr_4fr_1fr_1fr_1fr_1fr_1fr] gap-4 bg-neutral items-center text-center p-4 font-extrabold text-lg border border-primary-content";
+  const TABLEBASESTYLE = "grid grid-cols-[0.6fr_1fr_4fr_1fr_1fr_1fr_1fr_1fr_1fr] gap-4 bg-neutral items-center text-center p-4 font-extrabold text-lg border border-primary-content";
   const { isLoading, products, isError, error } = useProducts();
 
   if (isLoading) return <div className="pt-12"><Spinner /></div>;
@@ -23,12 +23,13 @@ const ProductTable = () => {
         <td>Inventory</td>
         <td>Unit Price</td>
         <td>Discount</td>
+        <td>Active</td>
         <td>Edit</td>
       </Table.Header>
 
       <Table.Body
         data={products}
-        render={(product: ProductInfo) => (
+        render={(product: ProductInfoSerialized) => (
           <ProdcutRow
             key={product.id}
             product={product}

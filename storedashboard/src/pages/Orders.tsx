@@ -1,7 +1,7 @@
 import { PageLayout } from "../ui/PageLayout";
 
-const Order = () => {
+const Orders = () => {
   return <PageLayout title="Order">Order</PageLayout>;
 };
 
-export default Order;
+export default Orders;

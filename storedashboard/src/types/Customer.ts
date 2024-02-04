@@ -10,3 +10,16 @@ export interface CustomerInfo {
   last_login: string;
   is_active: boolean;
 }
+
+export type CustomerInfoSerialized = {
+  id: number;
+  email: string;
+  userName: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  birthDate: string;
+  memberShip: string;
+  lastLogin: string;
+  Active: boolean;
+};

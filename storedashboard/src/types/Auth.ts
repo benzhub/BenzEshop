@@ -4,7 +4,7 @@ export interface AuthToken {
 }
 
 export interface UserLogin {
-  username: string;
+  userName: string;
   password: string;
 }
 
@@ -15,3 +15,11 @@ export interface UserInfo {
   first_name: string;
   last_name: string;
 }
+
+export type UserInfoSerialized = {
+  customerId: string;
+  userName: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+};

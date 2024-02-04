@@ -1,17 +1,18 @@
 import Logout from "../features/authentication/Logout";
 import { useUser } from "../features/authentication/useUser";
 
-
 export const Header = () => {
-  const {userInfo} = useUser();
+  const { userInfo } = useUser();
   return (
     <div className="flex items-center justify-end gap-4 px-4 py-2">
       <div className="avatar placeholder online">
-          <div className="w-16 rounded-full bg-neutral text-neutral-content">
-            <span className="text-3xl">D</span>
-          </div>
+        <div className="w-16 rounded-full bg-neutral text-neutral-content">
+          <span className="text-3xl">
+            {userInfo?.userName.charAt(0).toUpperCase()}
+          </span>
         </div>
-        <Logout />
+      </div>
+      <Logout />
     </div>
   );
 };

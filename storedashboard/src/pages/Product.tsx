@@ -1,15 +1,7 @@
-import { type PropsWithChildren } from "react";
-import ProductTable from "../features/products/ProductTable";
-import { PageLayout } from "../ui/PageLayout";
-
-export type PageLayoutProps = PropsWithChildren<{ title: string }>;
+import ProductDetail from "../features/products/ProductDetail";
 
 const Product = () => {
-  return (
-    <PageLayout title="Products">
-      <ProductTable />
-    </PageLayout>
-  );
+  return <ProductDetail />;
 };
 
 export default Product;
