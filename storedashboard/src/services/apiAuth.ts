@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import { type AuthToken, type UserLogin, type UserInfo, type UserInfoSerialized } from "../types/Auth";
 import { handleAxiosError } from "../utils/handleAxiosError";
+import { getAuthToken } from "../utils/getAuthToken";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export async function login(userLogin: UserLogin): Promise<AuthToken> {
@@ -28,9 +29,8 @@ export async function login(userLogin: UserLogin): Promise<AuthToken> {
 }
 
 export async function getCurrentUser(): Promise<UserInfoSerialized> {
-  const authToken = localStorage.getItem("token");
-  if(!authToken) throw new Error("Credential invalidated!");
   try {
+    const authToken = getAuthToken();
     const config = {
       method: "get",
       url: `${apiUrl}/auth/users/me/`,

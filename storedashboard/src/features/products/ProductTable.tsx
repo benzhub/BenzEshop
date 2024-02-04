@@ -7,11 +7,11 @@ import { ProductInfoSerialized } from "../../types/Product";
 
 
 const ProductTable = () => {
-  const TABLEBASESTYLE = "grid grid-cols-[0.6fr_1fr_4fr_1fr_1fr_1fr_1fr_1fr_1fr] gap-4 bg-neutral items-center text-center p-4 font-extrabold text-lg border border-primary-content";
+  const TABLEBASESTYLE ="grid grid-cols-[0.6fr_1fr_4fr_1fr_1fr_1fr_1fr_1fr_1fr] gap-4 bg-neutral items-center text-center p-4 font-extrabold text-lg border border-primary-content";
   const { isLoading, products, isError, error } = useProducts();
 
   if (isLoading) return <div className="pt-12"><Spinner /></div>;
-  if(isError) return <p className="text-xl font-bold text-accent">Error Message: {error?.message}</p>
+  if (isError) return <p className="text-xl font-bold text-accent">Error Message: {error?.message}</p>;
   if (!products?.length) return <Empty resourceName="products" />;
   return (
     <Table baseStyles={`${TABLEBASESTYLE}`}>

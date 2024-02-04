@@ -24,7 +24,7 @@ const useTableContext = () => {
 function Table({ baseStyles, children }: TableProps) {
   return (
     <TableContext.Provider value={{ baseStyles }}>
-      <table className="overflow-auto rounded-xl">{children}</table>
+      <table>{children}</table>
     </TableContext.Provider>
   );
 }
@@ -34,7 +34,7 @@ function Header({ children }: PropsWithChildren) {
   const { baseStyles } = contextValue;
   return (
     <thead>
-      <tr className={baseStyles}>{children}</tr>
+      <tr className={`${baseStyles} rounded-t-xl`}>{children}</tr>
     </thead>
   );
 }
@@ -47,7 +47,7 @@ type RowProps = {
 function Row({ children, customeStyles }: RowProps) {
   const contextValue = useTableContext();
   const { baseStyles } = contextValue;
-  return <tr className={`${baseStyles} ${customeStyles}`}>{children}</tr>;
+  return <tr className={`${baseStyles} last:rounded-b-xl ${customeStyles}`}>{children}</tr>;
 }
 
 type BodyProps<T> = {
@@ -59,6 +59,7 @@ const Body = <T,>({ data, render }: BodyProps<T>) => {
   if (data.length === 0) return <p>No data to show at the moment</p>;
   return <tbody>{data.map(render)}</tbody>;
 };
+
 Table.Header = Header;
 Table.Body = Body;
 Table.Row = Row;

@@ -1,11 +1,11 @@
 import axios, { AxiosResponse } from "axios";
 import { ProductEditStatusProps, type ProductInfo, type ProductInfoSerialized } from "../types/Product";
 import { handleAxiosError } from "../utils/handleAxiosError";
+import { getAuthToken } from "../utils/getAuthToken";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export async function getProducts(): Promise<ProductInfoSerialized[]> {
-  const authToken = localStorage.getItem("token");
-  if (!authToken) throw new Error("Credential invalidated!");
+  const authToken = getAuthToken();
   try {
     const config = {
       method: "get",
@@ -31,11 +31,8 @@ export async function getProducts(): Promise<ProductInfoSerialized[]> {
   }
 }
 
-export async function getProduct(
-  productId: number,
-): Promise<ProductInfoSerialized> {
-  const authToken = localStorage.getItem("token");
-  if (!authToken) throw new Error("Credential invalidated!");
+export async function getProduct(productId: number): Promise<ProductInfoSerialized> {
+  const authToken = getAuthToken();
   try {
     const config = {
       method: "get",
@@ -56,8 +53,7 @@ export async function getProduct(
 }
 
 export async function setProductStatus(productStatus: ProductEditStatusProps): Promise<ProductInfo> {
-  const authToken = localStorage.getItem("token");
-  if (!authToken) throw new Error("Credential invalidated!");
+  const authToken = getAuthToken();
   try {
     const config = {
       method: 'patch',

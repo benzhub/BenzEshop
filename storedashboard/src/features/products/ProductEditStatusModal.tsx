@@ -18,7 +18,7 @@ const ProductEditStatusModal = ({productId, title, status, onCloseModal}: Produc
     }
   }, [isSuccess, onCloseModal])
 
-  if(isPending) return <Spinner/>
+  if(isPending) return <div className="flex justify-center py-12"><Spinner/></div>
   return (
     <div className="flex flex-col items-start gap-4 text-lg font-bold">
       <h3 className={`text-2xl ${status ? 'text-green-500' : 'text-orange-600' }`}>{status ? 'Enable' : 'Disable' } Product!!</h3>

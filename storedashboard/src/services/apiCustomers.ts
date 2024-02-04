@@ -4,11 +4,11 @@ import {
   type CustomerInfoSerialized,
 } from "../types/Customer";
 import { handleAxiosError } from "../utils/handleAxiosError";
+import { getAuthToken } from "../utils/getAuthToken";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 export async function getCustomers(): Promise<CustomerInfoSerialized[]> {
-  const authToken = localStorage.getItem("token");
-  if (!authToken) throw new Error("Credential invalidated!");
+  const authToken = getAuthToken();
   try {
     const config = {
       method: "get",

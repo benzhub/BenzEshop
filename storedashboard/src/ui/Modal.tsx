@@ -1,8 +1,6 @@
 import {
   Dispatch,
-  JSXElementConstructor,
   PropsWithChildren,
-  ReactElement,
   SetStateAction,
   cloneElement,
   createContext,
@@ -43,7 +41,7 @@ function Modal({ children }: PropsWithChildren) {
 }
 
 type OpenProps = {
-  children: ReactElement<any, string | JSXElementConstructor<any>>;
+  children: JSX.Element;
   opens: string;
 };
 
@@ -53,7 +51,7 @@ function Open({ children, opens: opensWindowName }: OpenProps) {
 }
 
 type WindowProps = {
-  children: ReactElement<any, string | JSXElementConstructor<any>>;
+  children: JSX.Element;
   name: string;
 };
 
