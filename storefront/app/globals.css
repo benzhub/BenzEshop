@@ -1,4 +1,8 @@
+@import url("./styles/slider.css");
+@import url("./styles/category-card.css");
+@import url("./styles/product-card.css");
+@import url("./styles/login-form.css");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-

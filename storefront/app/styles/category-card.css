@@ -1,0 +1,9 @@
+.category-card {
+  @apply rounded-[30px] h-[20rem] w-full xm:w-[15rem] 2xl:w-full m-auto bg-[#e0e0e0];
+}
+
+.category-card-shadow {
+  box-shadow:
+    15px 15px 30px #bebebe,
+    -15px -15px 30px #ffffff;
+}

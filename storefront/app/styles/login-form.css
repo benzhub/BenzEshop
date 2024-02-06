@@ -1,0 +1,35 @@
+.login-box {
+  @apply box-border w-[80%] rounded-[10px] bg-gradient-to-tr from-gray-900 to-gray-600 p-[40px] shadow-[0_0_25px_#22d3ee] sm:w-[400px];
+}
+
+.login-box input {
+  @apply mb-[30px] w-full border-b-[1px] border-white bg-transparent py-[10px] font-[1rem] text-white outline-none;
+}
+
+.login-box label {
+  @apply  pointer-events-none absolute left-0 top-0 py-[10px] font-[1rem] text-[#14b8a6] transition-all duration-500;
+}
+
+.user-box {
+  @apply relative;
+}
+
+.login-box input:focus ~ label,
+.login-box input:valid ~ label {
+  @apply top-[-20px] left-0 text-[#bdb8b8] text-[0.75rem];
+}
+
+.login-button {
+  @apply relative mt-[40px] inline-block overflow-hidden px-[20px] py-[10px] font-[1rem] uppercase tracking-[4px] text-white cursor-pointer no-underline transition-all duration-500;
+}
+
+.login-button:hover {
+  background: #22d3ee;
+  color: #fff;
+  border-radius: 5px;
+  box-shadow:
+    0 0 5px #22d3ee,
+    0 0 25px #22d3ee,
+    0 0 50px #22d3ee,
+    0 0 100px #22d3ee;
+}

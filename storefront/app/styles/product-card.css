@@ -1,0 +1,36 @@
+.card {
+  @apply m-auto flex h-[25rem] w-full xm:w-[15rem] 2xl:w-[16rem] flex-col items-center justify-center rounded-[1.25rem] bg-[#313131] text-white transition-all duration-200 ease-in-out;
+}
+
+.card-textBox {
+  @apply z-20 flex flex-col items-center justify-center gap-4 opacity-0 transition-all duration-200 ease-in-out hover:opacity-100;
+}
+
+.card-img {
+  @apply absolute z-10  transition-all duration-200 ease-in-out;
+}
+
+.card:hover > .card-textBox {
+  opacity: 100%;
+}
+
+.card:hover > .card-img {
+  height: 65%;
+  filter: contrast(15%);
+  animation: anim 3s infinite;
+}
+
+@keyframes anim {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.card:hover {
+  transform: scale(1.04) rotate(-1deg);
+}

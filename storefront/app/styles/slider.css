@@ -1,0 +1,12 @@
+.slide {
+  @apply absolute h-[30rem] w-full rounded-2xl transition-all delay-300 duration-300 ease-in-out;
+}
+.slider-btn {
+  @apply absolute top-[55%] z-10 h-[3rem] w-[3rem] cursor-pointer rounded-full border-none bg-[#ffffffb3] text-[2rem] text-[#333] sm:h-[4.5rem] sm:w-[4.5rem] sm:text-[2.5rem];
+}
+
+.slider-shadow {
+  box-shadow:
+    15px 15px 30px #bebebe,
+    -15px -15px 30px #ffffff;
+}
